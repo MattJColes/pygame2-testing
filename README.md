@@ -1,5 +1,5 @@
-# Pygame Testing
-Just mucking around with Pygame...
+# Pygame 2.0 Testing
+Just mucking around with Pygame 2.0... in preparation for the Pygame Community Summer Team Jam: https://itch.io/jam/pygame-community-summer-team-jam
 
 ### Prerequisites
 
