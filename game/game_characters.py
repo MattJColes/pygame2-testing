@@ -24,7 +24,7 @@ class Character(pygame.sprite.Sprite):
             num_of_frames = len(os.listdir(os.path.join('assets', 'sprites', self.char_type, animation)))
             for i in range(num_of_frames):
                 i = str(i)
-                img = pygame.image.load(os.path.join('assets', 'sprites', self.char_type, animation, i+'.png'))
+                img = pygame.image.load(os.path.join('assets', 'sprites', self.char_type, animation, i+'.png')).convert_alpha()
                 img = pygame.transform.scale(img, (int(img.get_width() * scale), int(img.get_height() * scale)))
                 temp_list.append(img)
             self.animation_list.append(temp_list)

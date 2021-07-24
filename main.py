@@ -1,5 +1,5 @@
 import os, pygame
-from game import game_characters
+from game import game_characters, game_weapons
 
 pygame.init()
 
@@ -17,6 +17,10 @@ GRAVITY = 0.75
 player = game_characters.Character('player', 200, 200, 3, 5, GRAVITY)
 player_move_left = False
 player_move_right = False
+shoot = False
+
+bullet_img = pygame.image.load(os.path.join('assets', 'sprites', 'icons', 'bullet.png')).convert_alpha()
+bullet_group = pygame.sprite.Group()
 
 enemy01 = game_characters.Character('enemy', 500, 200, 3, 5, GRAVITY)
 
@@ -34,7 +38,14 @@ while game_running:
 
     player.update_animation()
     player.draw(screen)
+
+    bullet_group.update(screen_width)
+    bullet_group.draw(screen)
+
     if player.alive:
+        if shoot:
+            bullet = game_weapons.Bullet(player.rect.centerx + (0.6 * player.rect.size[0] * player.direction), player.rect.centery, player.direction, bullet_img)
+            bullet_group.add(bullet)
         if player.in_air:
             player.update_action(2)
         elif player_move_left or player_move_right:
@@ -53,6 +64,8 @@ while game_running:
                 player_move_right = True
             if event.key == pygame.K_w and player.alive:
                 player.jump = True
+            if event.key == pygame.K_SPACE:
+                shoot = True
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
@@ -61,6 +74,8 @@ while game_running:
                 player_move_right = False
             if event.key == pygame.K_w and player.alive:
                 player.jump = False
+            if event.key == pygame.K_SPACE:
+                shoot = False
 
         if event.type == pygame.QUIT:
             game_running = False
