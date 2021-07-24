@@ -23,7 +23,8 @@ bullet_img = pygame.image.load(os.path.join('assets', 'sprites', 'icons', 'bulle
 bullet_group = pygame.sprite.Group()
 
 enemy01 = game_characters.Character('enemy', 500, 200, 3, 5, GRAVITY)
-
+enemy_move_left = False
+enemy_move_right = False
 
 def draw_background():
     screen.fill(game_background_color)
@@ -35,12 +36,17 @@ while game_running:
     draw_background()
 
     enemy01.draw(screen)
+    enemy01.update_animation()
+    enemy01.draw(screen)
+
+    if enemy01.in_air:
+        enemy01.update_action(2)
+        enemy01.move(enemy_move_left, enemy_move_right)
+    else:
+        enemy01.update_action(0)
 
     player.update_animation()
     player.draw(screen)
-
-    bullet_group.update(screen_width)
-    bullet_group.draw(screen)
 
     if player.alive:
         if shoot:
@@ -53,6 +59,9 @@ while game_running:
         else:
             player.update_action(0)
         player.move(player_move_left, player_move_right)
+
+    bullet_group.update(screen_width)
+    bullet_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
