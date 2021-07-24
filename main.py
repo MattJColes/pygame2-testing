@@ -1,32 +1,70 @@
-import sys, os, pygame
-from game import level_loader
-
+import os, pygame
+from game import game_characters
 
 pygame.init()
 
-sprites_dir = os.path.join('assets', 'sprites')
-
-size = width, height = 640, 480
-speed = [2, 2]
-black = 0, 0, 0
-
-screen = pygame.display.set_mode(size)
+screen_width = 800
+screen_height = int(screen_width * 0.8)
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption('Platformer')
 clock = pygame.time.Clock()
+fps = 60
+game_running = True
+game_background_color = (150, 220, 150)
+game_ground_color = (255, 200, 200)
+GRAVITY = 0.75
 
-character = pygame.image.load(os.path.join(sprites_dir, 'player16.png'))
-character_rect = character.get_rect()
+player = game_characters.Character('player', 200, 200, 3, 5, GRAVITY)
+player_move_left = False
+player_move_right = False
 
-while 1:
+enemy01 = game_characters.Character('enemy', 500, 200, 3, 5, GRAVITY)
+
+
+def draw_background():
+    screen.fill(game_background_color)
+    pygame.draw.line(screen, game_ground_color, (0, 300), (screen_width, 300))
+
+
+while game_running:
+    clock.tick(fps)
+    draw_background()
+
+    enemy01.draw(screen)
+
+    player.update_animation()
+    player.draw(screen)
+    if player.alive:
+        if player.in_air:
+            player.update_action(2)
+        elif player_move_left or player_move_right:
+            player.update_action(1)
+        else:
+            player.update_action(0)
+        player.move(player_move_left, player_move_right)
+
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                game_running = False
+            if event.key == pygame.K_a:
+                player_move_left = True
+            if event.key == pygame.K_d:
+                player_move_right = True
+            if event.key == pygame.K_w and player.alive:
+                player.jump = True
 
-    character_rect = character_rect.move(speed)
-    if character_rect.left < 0 or character_rect.right > width:
-        speed[0] = -speed[0]
-    if character_rect.top < 0 or character_rect.bottom > height:
-        speed[1] = -speed[1]
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_a:
+                player_move_left = False
+            if event.key == pygame.K_d:
+                player_move_right = False
+            if event.key == pygame.K_w and player.alive:
+                player.jump = False
 
-    screen.fill(black)
-    screen.blit(character, character_rect)
-    pygame.display.flip()
-    clock.tick(60)
+        if event.type == pygame.QUIT:
+            game_running = False
+
+    pygame.display.update()
+
+pygame.quit()
