@@ -1,4 +1,7 @@
 import sys, os, pygame
+from game import level_loader
+
+
 pygame.init()
 
 sprites_dir = os.path.join('assets', 'sprites')
